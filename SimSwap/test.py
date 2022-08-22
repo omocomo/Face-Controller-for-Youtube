@@ -70,3 +70,10 @@ def test(src_video_path, src_image_path, dst_video_path):
         latend_id = latend_id.to('cuda')
 
         video_swap(opt.video_path, latend_id, model, app, opt.output_path, temp_results_dir=opt.temp_path, use_mask=opt.use_mask)
+
+
+if __name__ == '__main__':
+    src_video_path = 'C:/Users/IT/Desktop/fast-flutter/static/videos/output.mp4'
+    src_image_path = 'C:/Users/IT/Documents/hair_seg/hair_seg/img/1.jpg'
+    dst_video_path = './output/output.mp4'
+    test(src_video_path, src_image_path, dst_video_path)
