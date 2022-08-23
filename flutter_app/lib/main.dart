@@ -64,93 +64,122 @@ class _MainPageState extends State<MainPage> {
     final videoName = video_name != '' ? video_name : 'No File Selected';
     final imageName = image_name != '' ? image_name : 'No File Selected';
     final imageBytes = image_file ?? Uint8List.fromList([0]);
-    return Scaffold(
-        appBar: AppBar(
-          title: Row(
-            children: [
-              Image.asset(
-                "logo.png",
-                height: 99,
-              ),
-              Text(MyApp.title),
-            ],
-          ),
-          centerTitle: true,
-        ),
-        resizeToAvoidBottomInset: false,
-        body: SingleChildScrollView(
-          child: Container(
-            padding: EdgeInsets.all(32),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+    return DefaultTabController(
+        length: 2,
+        child: Scaffold(
+            appBar: AppBar(
+              title: Row(
                 children: [
-                  ButtonWidget(
-                    text: 'Upload Video',
-                    icon: Icons.cloud_upload_outlined,
-                    onClicked: uploadFile,
+                  Image.asset(
+                    "logo.png",
+                    height: 99,
                   ),
-                  SizedBox(height: 8),
-                  Text(
-                    videoName,
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                  ),
-                  SizedBox(height: 20),
-                  Visibility(
-                      visible: _upload_visibility,
-                      child: SizedBox(
-                        height: 300,
-                        child: ChewieListItem(
-                          videoPlayerController: VideoPlayerController.asset(
-                            // 'assets/output.mp4'
-                            'http://localhost:8000/videos/$videoName',
-                          ),
-                          looping: true,
-                        ),
-                      )),
-                  SizedBox(height: 48),
-                  ButtonWidget(
-                    text: 'Select Image',
-                    icon: Icons.mms_outlined,
-                    onClicked: selectImageSwapping,
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    imageName,
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                  ),
-                  SizedBox(height: 20),
-                  Visibility(
-                      visible: _select_visibility,
-                      child: SizedBox(
-                        height: 250,
-                        child: Image.memory(imageBytes),
-                      )),
-                  SizedBox(height: 48),
-                  ButtonWidget(
-                    text: 'Download Result',
-                    icon: Icons.download_for_offline_outlined,
-                    onClicked: selectImageSwapping,
-                  ),
-                  SizedBox(height: 20),
-                  Visibility(
-                      visible: _result_visibility,
-                      child: SizedBox(
-                        height: 300,
-                        child: ChewieListItem(
-                          videoPlayerController: VideoPlayerController.asset(
-                            // 'assets/output.mp4'
-                            'http://localhost:8000/videos/$videoName',
-                          ),
-                          looping: true,
-                        ),
-                      )),
-                  // task != null ? buildUploadStatus(task!) : Container(),
+                  Text(MyApp.title),
                 ],
               ),
+              bottom: TabBar(
+                tabs: [
+                  Tab(
+                    text: "Face Swapping",
+                  ),
+                  Tab(
+                    text: "Mosaic",
+                  ),
+                ],
+              ),
+              centerTitle: true,
             ),
-          ),
-        ));
+            resizeToAvoidBottomInset: false,
+            body: TabBarView(
+              children: [
+                SingleChildScrollView(
+                  child: Container(
+                    padding: EdgeInsets.all(32),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ButtonWidget(
+                            text: 'Upload Video',
+                            icon: Icons.cloud_upload_outlined,
+                            onClicked: uploadFile,
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            videoName,
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w500),
+                          ),
+                          SizedBox(height: 20),
+                          Visibility(
+                              visible: _upload_visibility,
+                              child: SizedBox(
+                                height: 300,
+                                child: ChewieListItem(
+                                  videoPlayerController:
+                                      VideoPlayerController.asset(
+                                    // 'assets/output.mp4'
+                                    'http://localhost:8000/videos/$videoName',
+                                  ),
+                                  looping: true,
+                                ),
+                              )),
+                          SizedBox(height: 48),
+                          ButtonWidget(
+                            text: 'Select Image',
+                            icon: Icons.mms_outlined,
+                            onClicked: selectImageSwapping,
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            imageName,
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w500),
+                          ),
+                          SizedBox(height: 20),
+                          Visibility(
+                              visible: _select_visibility,
+                              child: SizedBox(
+                                height: 250,
+                                child: Image.memory(imageBytes),
+                              )),
+                          SizedBox(height: 48),
+                          ButtonWidget(
+                            text: 'Download Result',
+                            icon: Icons.download_for_offline_outlined,
+                            onClicked: selectImageSwapping,
+                          ),
+                          SizedBox(height: 20),
+                          Visibility(
+                              visible: _result_visibility,
+                              child: SizedBox(
+                                height: 300,
+                                child: ChewieListItem(
+                                  videoPlayerController:
+                                      VideoPlayerController.asset(
+                                    // 'assets/output.mp4'
+                                    'http://localhost:8000/videos/$videoName',
+                                  ),
+                                  looping: true,
+                                ),
+                              )),
+                          // task != null ? buildUploadStatus(task!) : Container(),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  color: Colors.deepOrangeAccent,
+                  child: Center(
+                    child: Text(
+                      "First",
+                      style: TextStyle(color: Colors.white, fontSize: 30.0),
+                    ),
+                  ),
+                ),
+              ],
+            )));
   }
 
   Future uploadFile() async {
