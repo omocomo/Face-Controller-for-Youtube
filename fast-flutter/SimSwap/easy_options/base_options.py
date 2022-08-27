@@ -14,7 +14,7 @@ class BaseOptions():
             # experiment specifics
             "name": 'people',
             "gpu_ids": '0',
-            "checkpoints_dir": './checkpoints',
+            "checkpoints_dir": './SimSwap/checkpoints',
             "model": 'pix2pixHD',
             "norm": 'batch',
             "use_dropout": True,
@@ -31,7 +31,7 @@ class BaseOptions():
             "input_nc": 3,
             "output_nc": 3,
             # for setting inputs
-            "dataroot": './datasets/cityscapes/',
+            "dataroot": './SimSwap/datasets/cityscapes/',
             "resize_or_crop": 'scale_width',
             "serial_batches": True,
             "no_flip": True,

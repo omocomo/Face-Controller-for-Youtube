@@ -12,7 +12,7 @@ class TestOptions(BaseOptions):
     def initialize(self):
         args = BaseOptions.initialize(self)
         args["ntest"] = float("inf")
-        args["results_dir"] = './results/'
+        args["results_dir"] = './SimSwap/results/'
         args["aspect_ratio"] = 1.0
         args["phase"] = 'test'
         args["which_epoch"] = 'latest'
@@ -22,13 +22,13 @@ class TestOptions(BaseOptions):
         args["export_onnx"] = ''
         args["engine"] = ''
         args["onnx"] = ''
-        args["Arc_path"] = 'models/BEST_checkpoint.tar'
+        args["Arc_path"] = './SimSwap/models/BEST_checkpoint.tar'
         args["pic_a_path"] = './crop_224/gdg.jpg'
         args["pic_b_path"] = './crop_224/zrf.jpg'
         args["pic_specific_path"] = './crop_224/zrf.jpg'
-        args["multisepcific_dir"] = './demo_file/multispecific'
-        args["video_path"] = './demo_file/multi_people_1080p.mp4'
-        args["temp_path"] = './temp_results'
+        args["multisepcific_dir"] = './SimSwap/demo_file/multispecific'
+        args["video_path"] = './demo_file/How.mp4'
+        args["temp_path"] = './SimSwap/temp_results'
         args["output_path"] = './output/'
         args["id_thres"] = 0.03
         args["no_simswaplogo"] = True
