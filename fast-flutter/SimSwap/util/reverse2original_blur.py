@@ -154,6 +154,7 @@ def reverse2wholeimage(b_align_crop_tenor_list,swaped_imgs, mats, crop_size, ori
         else:
             target_image = np.array(target_image, dtype=np.float)[..., ::-1] * 255
 
+        target_image = cv2.blur(target_image, (100, 100))
 
         img_mask_list.append(img_mask)
         target_image_list.append(target_image)

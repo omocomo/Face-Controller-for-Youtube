@@ -30,28 +30,28 @@ transformer_Arcface = transforms.Compose([
 #     ])
 
 
-if __name__ == '__main__':
-    opt = TestOptions().parse()
-    pic_specific = opt.pic_specific_path
+def multispecific():
+    args = TestOptions().initialize()
+    pic_specific = args.pic_specific_path
 
-    opt.Arc_path = './arcface_model/arcface_checkpoint.tar'
+    args.Arc_path = './SimSwap/arcface_model/arcface_checkpoint.tar'
 
     start_epoch, epoch_iter = 1, 0
-    crop_size = opt.crop_size
+    crop_size = args.crop_size
 
-    multisepcific_dir = opt.multisepcific_dir
+    multisepcific_dir = args.multisepcific_dir
     torch.nn.Module.dump_patches = True
     if crop_size == 512:
-        opt.which_epoch = 550000
-        opt.name = '512'
+        args.which_epoch = 550000
+        args.name = '512'
         mode = 'ffhq'
     else:
         mode = 'None'
-    model = create_model(opt)
+    model = create_model(args)
     model.eval()
 
 
-    app = Face_detect_crop(name='antelope', root='./insightface_func/models')
+    app = Face_detect_crop(name='antelope', root='./SimSwap/insightface_func/models')
     app.prepare(ctx_id= 0, det_thresh=0.6, det_size=(640,640),mode=mode)
 
     # The specific person to be swapped(source)
@@ -97,6 +97,8 @@ if __name__ == '__main__':
 
 
 
-        video_swap(opt.video_path, target_id_norm_list,source_specific_id_nonorm_list, opt.id_thres, \
-            model, app, opt.output_path,temp_results_dir=opt.temp_path,no_simswaplogo=opt.no_simswaplogo,use_mask=opt.use_mask,crop_size=crop_size)
+        video_swap(args.video_path, target_id_norm_list,source_specific_id_nonorm_list, args.id_thres, \
+            model, app, args.output_path,temp_results_dir=args.temp_path,no_simswaplogo=args.no_simswaplogo,use_mask=args.use_mask,crop_size=crop_size)
 
+if __name__ == '__main__':
+    multispecific()

@@ -154,3 +154,5 @@ models/__pycache__
 options/__pycache__
 parsing_model/__pycache__
 util/__pycache__
+tmp
+temp_results

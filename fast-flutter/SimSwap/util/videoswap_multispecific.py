@@ -91,14 +91,19 @@ def video_swap(video_path, target_id_norm_list,source_specific_id_nonorm_list,id
                     frame_align_crop_tenor_list.append(frame_align_crop_tenor)
 
                 id_compare_values_array = np.array(id_compare_values).transpose(1,0)
+                print('id', id_compare_values_array)
                 min_indexs = np.argmin(id_compare_values_array,axis=0)
                 min_value = np.min(id_compare_values_array,axis=0)
+                print(min_indexs)
+                print(min_value)
 
                 swap_result_list = [] 
                 swap_result_matrix_list = []
                 swap_result_ori_pic_list = []
                 for tmp_index, min_index in enumerate(min_indexs):
-                    if min_value[tmp_index] < id_thres:
+                    # if min_index == 0:
+                    #     continue
+                    if min_value[tmp_index] > id_thres:
                         swap_result = swap_model(None, frame_align_crop_tenor_list[tmp_index], target_id_norm_list[min_index], None, True)[0]
                         swap_result_list.append(swap_result)
                         swap_result_matrix_list.append(frame_mat_list[tmp_index])
@@ -129,6 +134,8 @@ def video_swap(video_path, target_id_norm_list,source_specific_id_nonorm_list,id
                 cv2.imwrite(os.path.join(temp_results_dir, 'frame_{:0>7d}.jpg'.format(frame_index)), frame)
         else:
             break
+
+        # break
 
     video.release()
 
