@@ -55,9 +55,10 @@ class _ChewieListItemState extends State<ChewieListItem> {
 
   @override
   void dispose() {
-    super.dispose();
+    
     // IMPORTANT to dispose of all the used resources
     widget.videoPlayerController.dispose();
     _chewieController?.dispose();
+    super.dispose();
   }
 }

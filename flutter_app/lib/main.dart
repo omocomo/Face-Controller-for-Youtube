@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:chewie/chewie.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -59,7 +61,7 @@ class MainPage extends StatefulWidget {
   _MainPageState createState() => _MainPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin {
   // File? file;
   var video_name = 'No File Selected';
   var image_name = 'No File Selected';
@@ -97,6 +99,33 @@ class _MainPageState extends State<MainPage> {
   final listKey = GlobalKey<AnimatedListState>();
   final List<ListItem> items = List.from(listItems);
 
+  late TabController _controller;
+  @override
+  void initState() {
+    super.initState();
+    _controller = TabController(length: 2, vsync: this);
+    _controller.addListener(() {
+      setState(() {
+        video_name = 'No File Selected';
+        image_name = 'No File Selected';
+        image_file;
+        select_image_list = List.generate(1, (index) => null);
+        _upload_visibility = false;
+        _select_visibility = false;
+        _result_visibility = false;
+        _mode1_visibility = false;
+        _mode2_visibility = false;
+      });
+    });
+  }
+
+  @override
+ void dispose() {
+   _controller.dispose();
+   super.dispose();
+ }
+
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -113,6 +142,7 @@ class _MainPageState extends State<MainPage> {
                 ],
               ),
               bottom: TabBar(
+                controller: _controller,
                 tabs: [
                   Tab(
                     text: "Face Swapping",
@@ -125,7 +155,8 @@ class _MainPageState extends State<MainPage> {
               centerTitle: true,
             ),
             resizeToAvoidBottomInset: false,
-            body: TabBarView(
+            body: new TabBarView(
+              controller: _controller,
               children: [
                 SingleChildScrollView(
                   child: Container(
@@ -232,11 +263,11 @@ class _MainPageState extends State<MainPage> {
                                   onClicked: selectGivenImage,
                                 ), 
                                 SizedBox(height: 8),
-                                Text(
-                                  image_name,
-                                  style: TextStyle(
-                                      fontSize: 16, fontWeight: FontWeight.w500),
-                                 ),
+                                // Text(
+                                //   image_name,
+                                //   style: TextStyle(
+                                //       fontSize: 16, fontWeight: FontWeight.w500),
+                                //  ),
                                 SizedBox(height: 20),
                                 Visibility(
                                   visible: _select_visibility,
@@ -259,11 +290,11 @@ class _MainPageState extends State<MainPage> {
                                   icon: Icons.mms_outlined,
                                   onClicked: insertItem,
                                 ), SizedBox(height: 8),
-                                Text(
-                                  image_name,
-                                  style: TextStyle(
-                                      fontSize: 16, fontWeight: FontWeight.w500),
-                                 ),
+                                // Text(
+                                //   image_name,
+                                //   style: TextStyle(
+                                //       fontSize: 16, fontWeight: FontWeight.w500),
+                                //  ),
                                 SizedBox(height: 20),
                                 Container(
                                   height: 300,
@@ -354,11 +385,11 @@ class _MainPageState extends State<MainPage> {
                                 onClicked: selectImages,
                               ), 
                               SizedBox(height: 8),
-                              Text(
-                                image_name,
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w500),
-                              ),
+                              // Text(
+                              //   image_name,
+                              //   style: TextStyle(
+                              //       fontSize: 16, fontWeight: FontWeight.w500),
+                              // ),
                               SizedBox(height: 20),
                               Visibility(
                                 visible: _select_visibility,
@@ -579,6 +610,8 @@ class _MainPageState extends State<MainPage> {
 
   Future selectMode2() async {
     _changed(false, 'mode1');
+    _changed(false, 'select');
+    _changed(false, 'result');
 
     var dio = Dio();
     final response = 
@@ -599,7 +632,12 @@ class _MainPageState extends State<MainPage> {
     _changed(false, 'result');
     var dio = Dio();
     final response =
-        await dio.post('http://localhost:8000/multi_swapping');
+        await dio.post('http://localhost:8000/multi_swapping',
+        // onSendProgress: (count, total) {
+        //    var progress = count / total;
+        //    print('progress: $progress ($count/$total)');
+        //   }
+        );
 
     if (response.statusCode == 200) {
         print(response.data['outputUrl']);
@@ -610,26 +648,33 @@ class _MainPageState extends State<MainPage> {
   Future specificSwapping() async {
     _changed(false, 'result');
 
-    print(items[0].imageName);
-    print(items[0].getValue);
+    var dio = Dio();
+    var formData = {
+      'src_images': List.generate(
+          items.length,
+          ((index) => items[index].imageName.toString())),
+      'dst_images': List.generate(
+          items.length, 
+          ((index) => given_img_list[items[index].getValue].toString()))
+    };
 
-    print(items[1].imageName);
-    print(items[1].getValue);
 
-    // var dio = Dio();
-    // final response =
-    //     await dio.post('http://localhost:8000/multi_swapping');
+    final response =
+        await dio.post('http://localhost:8000/get_specific_swapping', data: formData, 
+        );
 
-    // if (response.statusCode == 200) {
-    //     print(response.data['outputUrl']);
-    //     _changed(true, 'result');
-    //   }
+    if (response.statusCode == 200) {
+        // print(response.data['outputUrl']);
+        _changed(true, 'result');
+      }
   }
 
   
 
   Future selectMode1() async {
     _changed(false, 'mode2');
+    _changed(false, 'select');
+    _changed(false, 'result');
     _changed(true, 'mode1');
   }
 

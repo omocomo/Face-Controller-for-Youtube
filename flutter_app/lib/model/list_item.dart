@@ -4,10 +4,10 @@ class ListItem {
   final String imageName;
   final String urlImage;
 
-  static int selectIndex = 0;
+  int selectIndex = 0;
   // int selectIndex;
 
-  const ListItem({
+  ListItem({
     required this.imageName,
     required this.urlImage,
     required int selectIndex,
