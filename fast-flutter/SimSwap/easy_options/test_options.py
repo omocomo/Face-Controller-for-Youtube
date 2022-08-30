@@ -26,7 +26,7 @@ class TestOptions(BaseOptions):
         args["pic_a_path"] = './crop_224/gdg.jpg'
         args["pic_b_path"] = './crop_224/zrf.jpg'
         args["pic_specific_path"] = './crop_224/zrf.jpg'
-        args["multisepcific_dir"] = './SimSwap/demo_file/multispecific'
+        args["multisepcific_dir"] = './DATA/temp'
         args["video_path"] = './demo_file/How.mp4'
         args["temp_path"] = './SimSwap/temp_results'
         args["output_path"] = './output/'

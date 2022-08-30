@@ -20,7 +20,7 @@ def _totensor(array):
     img = tensor.transpose(0, 1).transpose(0, 2).contiguous()
     return img.float().div(255)
 
-def video_swap(video_path, target_id_norm_list,source_specific_id_nonorm_list,id_thres, swap_model, detect_model, save_path, temp_results_dir='./temp_results', crop_size=224, no_simswaplogo = False,use_mask =False):
+def video_swap(video_path, target_id_norm_list,source_specific_id_nonorm_list,id_thres, swap_model, detect_model, save_path, temp_results_dir='./temp_results', crop_size=224, no_simswaplogo = True,use_mask =False):
     video_forcheck = VideoFileClip(video_path)
     if video_forcheck.audio is None:
         no_audio = True
@@ -33,7 +33,7 @@ def video_swap(video_path, target_id_norm_list,source_specific_id_nonorm_list,id
         video_audio_clip = AudioFileClip(video_path)
 
     video = cv2.VideoCapture(video_path)
-    logoclass = watermark_image('./simswaplogo/simswaplogo.png')
+    logoclass = '' # watermark_image('./simswaplogo/simswaplogo.png')
     ret = True
     frame_index = 0
 
@@ -54,7 +54,7 @@ def video_swap(video_path, target_id_norm_list,source_specific_id_nonorm_list,id
         n_classes = 19
         net = BiSeNet(n_classes=n_classes)
         net.cuda()
-        save_pth = os.path.join('./parsing_model/checkpoint', '79999_iter.pth')
+        save_pth = os.path.join('./SimSwap/parsing_model/checkpoint', '79999_iter.pth')
         net.load_state_dict(torch.load(save_pth))
         net.eval()
     else:
@@ -91,11 +91,11 @@ def video_swap(video_path, target_id_norm_list,source_specific_id_nonorm_list,id
                     frame_align_crop_tenor_list.append(frame_align_crop_tenor)
 
                 id_compare_values_array = np.array(id_compare_values).transpose(1,0)
-                print('id', id_compare_values_array)
+                # print('id', id_compare_values_array)
                 min_indexs = np.argmin(id_compare_values_array,axis=0)
                 min_value = np.min(id_compare_values_array,axis=0)
-                print(min_indexs)
-                print(min_value)
+                # print(min_indexs)
+                # print(min_value)
 
                 swap_result_list = [] 
                 swap_result_matrix_list = []
@@ -103,7 +103,7 @@ def video_swap(video_path, target_id_norm_list,source_specific_id_nonorm_list,id
                 for tmp_index, min_index in enumerate(min_indexs):
                     # if min_index == 0:
                     #     continue
-                    if min_value[tmp_index] > id_thres:
+                    if min_value[tmp_index] < id_thres:
                         swap_result = swap_model(None, frame_align_crop_tenor_list[tmp_index], target_id_norm_list[min_index], None, True)[0]
                         swap_result_list.append(swap_result)
                         swap_result_matrix_list.append(frame_mat_list[tmp_index])

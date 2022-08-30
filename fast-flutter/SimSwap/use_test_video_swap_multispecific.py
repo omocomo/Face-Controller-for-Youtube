@@ -6,7 +6,7 @@ from PIL import Image
 import torch.nn.functional as F
 from torchvision import transforms
 from models.models import create_model
-from options.test_options import TestOptions
+from easy_options.test_options import TestOptions
 from insightface_func.face_detect_crop_multi import Face_detect_crop
 from util.videoswap_multispecific import video_swap
 import os
@@ -30,11 +30,14 @@ transformer_Arcface = transforms.Compose([
 #     ])
 
 
-def multispecific():
+def multispecific(src_video_path, dst_video_path):
     args = TestOptions().initialize()
-    pic_specific = args.pic_specific_path
+    # pic_specific = args.pic_specific_path
 
     args.Arc_path = './SimSwap/arcface_model/arcface_checkpoint.tar'
+    args.video_path = src_video_path
+    args.output_path = dst_video_path
+    args.temp_path = './SimSwap/tmp'
 
     start_epoch, epoch_iter = 1, 0
     crop_size = args.crop_size
