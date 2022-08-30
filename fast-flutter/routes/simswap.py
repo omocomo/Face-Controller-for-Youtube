@@ -1,8 +1,10 @@
 from fastapi import APIRouter
 from fastapi import UploadFile, File
-from fastapi.responses import FileResponse, StreamingResponse
+from fastapi.responses import FileResponse
 from SimSwap.use_test_video_swap_multi import swap_multi
 from SimSwap.use_test_video_mosaic import mosaic
+from SimSwap.use_test_video_swap_multispecific import multispecific
+from shutil import copyfile
 
 # from config.db import conn
 from typing import List
@@ -109,7 +111,7 @@ def get_image(file_name:str):
 
 @router.post('/multi_swapping')
 async def swapping(): 
-    global SRC_VIDEO_PATH, SRC_IMG_PATH, OUTPUT_VIDEO_PATH, OUTPUT_VIDEO_NAME
+    # global SRC_VIDEO_PATH, SRC_IMG_PATH, OUTPUT_VIDEO_PATH, OUTPUT_VIDEO_NAME
    
     print('Video', SRC_VIDEO_PATH)
     print('Img', SRC_IMG_PATH)
@@ -152,6 +154,28 @@ async def upload_images(in_files: List[UploadFile] = File(...)):
 @router.post('/get_mosaic')
 async def get_mosaic(): 
     mosaic(SRC_VIDEO_PATH)
+    output_url = SERVER_OUTPUT_DIR + OUTPUT_VIDEO_NAME
+    result = {'outputUrl' : output_url}
+    return result
+
+
+@router.post('/get_specific_swapping')
+async def get_specific_swapping(src_images: List[str], dst_images: List[str]): 
+    print(delete_all_files(TEMP_DIR))
+
+    for i, (src_name, dst_name) in enumerate(zip(src_images, dst_images)):
+        # SRC 이미지 저장
+        src_path = os.path.join(IMG_DIR, src_name)
+        dst_path = os.path.join(TEMP_DIR, 'SRC_' + str(i+1).zfill(2) + '.jpg')
+        copyfile(src_path, dst_path)
+
+        # DST 이미지 저장
+        src_path = os.path.join(GIVEN_IMG_DIR, dst_name)
+        dst_path = os.path.join(TEMP_DIR, 'DST_' + str(i+1).zfill(2) + '.jpg')
+        copyfile(src_path, dst_path)
+
+    multispecific(SRC_VIDEO_PATH, OUTPUT_VIDEO_PATH)
+
     output_url = SERVER_OUTPUT_DIR + OUTPUT_VIDEO_NAME
     result = {'outputUrl' : output_url}
     return result
