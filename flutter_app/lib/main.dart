@@ -63,6 +63,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin {
   // File? file;
+  var server = 'localhost'; // server 0.0.0.0
   var video_name = 'No File Selected';
   var image_name = 'No File Selected';
   var image_file;
@@ -185,7 +186,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                                 child: ChewieListItem(
                                   videoPlayerController:
                                       VideoPlayerController.asset(
-                                    'http://localhost:8000/DATA/videos/$video_name',
+                                    'http://$server:8000/DATA/videos/$video_name',
                                   ),
                                   looping: true,
                                 ),
@@ -239,7 +240,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                                                   color: Colors.white,
                                                 ),
                                                 child: Image.network(
-                                                  'http://localhost:8000/DATA/given/$imgName', fit: BoxFit.fitHeight), 
+                                                  'http://$server:8000/DATA/given/$imgName', fit: BoxFit.fitHeight), 
                                               );
                                             },
                                           );
@@ -274,7 +275,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                                   child: SizedBox(
                                     height: 250,
                                     child: Image.network(
-                                      'http://localhost:8000/DATA/images/$image_name',
+                                      'http://$server:8000/DATA/images/$image_name',
                                     ),
                                   )),
                               ],
@@ -313,7 +314,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                                   child: SizedBox(
                                     height: 250,
                                     child: Image.network(
-                                      'http://localhost:8000/DATA/images/$image_name',
+                                      'http://$server:8000/DATA/images/$image_name',
                                     ),
                                   )),
                               ],
@@ -324,7 +325,9 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                           ButtonWidget(
                             text: 'Convert',
                             icon: Icons.published_with_changes_rounded,
-                            onClicked: specificSwapping,
+                            onClicked: (_mode1_visibility)
+                          ? specificSwapping
+                          : multiSwapping,
                           ),
                           SizedBox(height: 20),
                           Visibility(
@@ -335,7 +338,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                                   videoPlayerController:
                                       VideoPlayerController.asset(
                                     // 'assets/output.mp4'
-                                    'http://localhost:8000/DATA/outputs/$video_name',
+                                    'http://$server:8000/DATA/outputs/$video_name',
                                   ),
                                   looping: true,
                                 ),
@@ -373,7 +376,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                                   child: ChewieListItem(
                                     videoPlayerController:
                                         VideoPlayerController.asset(
-                                      'http://localhost:8000/DATA/videos/$video_name',
+                                      'http://$server:8000/DATA/videos/$video_name',
                                     ),
                                     looping: true,
                                   ),
@@ -405,7 +408,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                                             return Container(
                                                 width: 160.0,
                                                 child: Card(
-                                                  child: Image.network('http://localhost:8000/DATA/images/${select_image_list[index]}'),
+                                                  child: Image.network('http://$server:8000/DATA/images/${select_image_list[index]}'),
                                                   )
                                                 );
                                            },
@@ -430,7 +433,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
                                         videoPlayerController:
                                             VideoPlayerController.asset(
                                           // 'assets/output.mp4'
-                                          'http://localhost:8000/DATA/outputs/$video_name',
+                                          'http://$server:8000/DATA/outputs/$video_name',
                                         ),
                                         looping: true,
                                       ),
@@ -481,7 +484,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
 
       // 업로드 요청
       final response =
-          await dio.post('http://localhost:8000/upload_image', data: formData);
+          await dio.post('http://$server:8000/upload_image', data: formData);
 
       if (response.statusCode == 200) {
         select_image_path = response.data['imgUrl'];
@@ -493,7 +496,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
       print("잉");
       var dio2 = Dio();
       final response2 = 
-          await dio2.get('http://localhost:8000/given_image');
+          await dio2.get('http://$server:8000/given_image');
       
       print(response2.statusCode);
       if (response2.statusCode == 200) {
@@ -528,7 +531,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
 
       // 업로드 요청
       final response =
-          await dio.post('http://localhost:8000/upload_video', data: formData);
+          await dio.post('http://$server:8000/upload_video', data: formData);
 
       if (response.statusCode == 200) {
         print(response.data['outputUrl']);
@@ -558,7 +561,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
 
       // 업로드 요청
       final response =
-          await dio.post('http://localhost:8000/upload_image', data: formData);
+          await dio.post('http://$server:8000/upload_image', data: formData);
 
       if (response.statusCode == 200) {
         print(response.data['imgUrl']);
@@ -574,7 +577,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
       var dio = Dio();
       // 업로드 요청
       final response =
-          await dio.post('http://localhost:8000/select_given_image/' + given_img_list[_current_img]);
+          await dio.post('http://$server:8000/select_given_image/' + given_img_list[_current_img]);
       if (response.statusCode == 200) {}
   }
 
@@ -597,7 +600,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
       });
 
       final response =
-          await dio.post('http://localhost:8000/upload_images', data: formData);
+          await dio.post('http://$server:8000/upload_images', data: formData);
 
       if (response.statusCode == 200) {
         print(select_image_list);
@@ -615,7 +618,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
 
     var dio = Dio();
     final response = 
-         await dio.get('http://localhost:8000/given_image');
+         await dio.get('http://$server:8000/given_image');
     
 
     if (response.statusCode == 200) {
@@ -632,7 +635,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
     _changed(false, 'result');
     var dio = Dio();
     final response =
-        await dio.post('http://localhost:8000/multi_swapping',
+        await dio.post('http://$server:8000/multi_swapping',
         // onSendProgress: (count, total) {
         //    var progress = count / total;
         //    print('progress: $progress ($count/$total)');
@@ -660,7 +663,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
 
 
     final response =
-        await dio.post('http://localhost:8000/get_specific_swapping', data: formData, 
+        await dio.post('http://$server:8000/get_specific_swapping', data: formData, 
         );
 
     if (response.statusCode == 200) {
@@ -682,7 +685,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
     _changed(false, 'result');
     var dio = Dio();
     final response =
-        await dio.post('http://localhost:8000/get_mosaic');
+        await dio.post('http://$server:8000/get_mosaic');
 
     if (response.statusCode == 200) {
         print(response.data['outputUrl']);
