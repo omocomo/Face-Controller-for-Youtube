@@ -12,18 +12,20 @@ import datetime
 import secrets
 import os
 from glob import glob
+import cv2
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(BASE_DIR,'DATA/')
+server = 'localhost' # 0.0.0.0
 
 VIDEO_DIR = os.path.join(DATA_DIR,'videos/')
-SERVER_VIDEO_DIR = os.path.join('http://localhost:8000/','DATA/','videos/')
+SERVER_VIDEO_DIR = os.path.join(f'http://{server}:8000/','DATA/','videos/')
 IMG_DIR = os.path.join(DATA_DIR,'images/')
-SERVER_IMG_DIR = os.path.join('http://localhost:8000/','DATA/','images/')
+SERVER_IMG_DIR = os.path.join(f'http://{server}:8000/','DATA/','images/')
 OUTPUT_DIR = os.path.join(DATA_DIR,'outputs/')
-SERVER_OUTPUT_DIR = os.path.join('http://localhost:8000/','DATA/','outputs/')
+SERVER_OUTPUT_DIR = os.path.join(f'http://{server}:8000/','DATA/','outputs/')
 GIVEN_IMG_DIR = os.path.join(DATA_DIR,'given/')
-SERVER_GIVEN_IMG_DIR = os.path.join('http://localhost:8000/','DATA/','given/')
+SERVER_GIVEN_IMG_DIR = os.path.join(f'http://{server}:8000/','DATA/','given/')
 TEMP_DIR = os.path.join(DATA_DIR,'temp/')
 # SERVER_TEMP_DIR = os.path.join('http://localhost:8000/','DATA/','temp/')
 
