@@ -133,24 +133,39 @@ def delete_all_files(filePath):
     else:
         return 'Directory Not Found'
 
+# @router.post('/upload_images')
+# async def upload_images(in_files: List[UploadFile] = File(...)):
+#     print(delete_all_files(TEMP_DIR))
+#     print(in_files)
+#     for i, file in enumerate(in_files):
+#         files = file.file.read()
+#         saved_file_name = file.filename 
+#         file_location1 = os.path.join(IMG_DIR, saved_file_name)
+#         with open(file_location1, "wb+") as file_object:
+#             file_object.write(files)
+#         saved_src_file_name = 'SRC_' + str(i+1).zfill(2) + '.jpg'
+#         file_location2 = os.path.join(TEMP_DIR, saved_src_file_name)
+#         with open(file_location2, "wb+") as file_object:
+#             file_object.write(files)
+#         saved_dst_file_name = 'DST_' + str(i+1).zfill(2) + '.jpg'
+#         file_location3 = os.path.join(TEMP_DIR, saved_dst_file_name)
+#         with open(file_location3, "wb+") as file_object:
+#             file_object.write(files)
+#     return 
+
 @router.post('/upload_images')
-async def upload_images(in_files: List[UploadFile] = File(...)):
+async def upload_images(file_names: List[str], image_names: List[str]):
     print(delete_all_files(TEMP_DIR))
-    print(in_files)
-    for i, file in enumerate(in_files):
-        files = file.file.read()
-        saved_file_name = file.filename 
-        file_location1 = os.path.join(IMG_DIR, saved_file_name)
-        with open(file_location1, "wb+") as file_object:
-            file_object.write(files)
-        saved_src_file_name = 'SRC_' + str(i+1).zfill(2) + '.jpg'
-        file_location2 = os.path.join(TEMP_DIR, saved_src_file_name)
-        with open(file_location2, "wb+") as file_object:
-            file_object.write(files)
-        saved_dst_file_name = 'DST_' + str(i+1).zfill(2) + '.jpg'
-        file_location3 = os.path.join(TEMP_DIR, saved_dst_file_name)
-        with open(file_location3, "wb+") as file_object:
-            file_object.write(files)
+    print(file_names)
+    for i, image_name in enumerate(file_names):
+        # SRC 이미지 저장
+        src_path = os.path.join(IMG_DIR, image_name)
+        dst_path = os.path.join(TEMP_DIR, 'SRC_' + str(i+1).zfill(2) + '.jpg')
+        copyfile(src_path, dst_path)
+
+        # DST 이미지 저장
+        dst_path = os.path.join(TEMP_DIR, 'DST_' + str(i+1).zfill(2) + '.jpg')
+        copyfile(src_path, dst_path)
     return 
 
 @router.post('/get_mosaic')
